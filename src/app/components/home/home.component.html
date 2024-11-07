@@ -1,0 +1,22 @@
+<div class="">
+    <table>
+        <tr>
+            <th>User</th>
+            <th>Post</th>
+        </tr>
+        <tr *ngFor="let post of posts | slice: (currentPage - 1) * pageSize : currentPage * pageSize">
+            <td>
+                <div class="post-container">
+                    Leanne Graham
+                    <a target="_blank" href="hildegard.org"> Romaguera-Crona</a>
+                </div>
+            </td>
+            <td>
+                <div class="post-container">
+                    {{ post.title }}
+                    {{ post.body }}
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
