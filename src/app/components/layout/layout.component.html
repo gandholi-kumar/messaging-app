@@ -1,0 +1,34 @@
+<div class="container">
+    <header class="header">
+        <nav class="container d-flex align-items-center">
+            <h2>{{pageTitle}}</h2>
+            <ng-container *ngIf="currentUser$ | async as user; else loginButton">
+                <ng-container [ngTemplateOutlet]="userHeaderContext" [ngTemplateOutletContext]="{$implicit: user}">
+                </ng-container>
+            </ng-container>
+        </nav>
+
+        <ng-template let-user #userHeaderContext>
+            <ng-container *ngIf="user; else loginButton">
+                <ng-container *ngIf="pageTitle !== 'Home'">
+                    <a routerLink="/" class="mx-3 btn btn-link">Go back to Home page</a>
+                </ng-container>
+                <div class="ms-auto">
+                    <span class="me-3">Welcome, {{ user.name }}!</span>
+                    <ng-container *ngIf="pageTitle === 'Home'">
+                        <button class="btn btn-primary me-2" routerLink="/post-edit">New Post</button>
+                        <button class="btn btn-secondary" (click)="logout()">Log Out</button>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </ng-template>
+        <ng-template #loginButton>
+            <span class="ms-auto me-3">You are not logged in</span>
+            <button class="btn btn-primary" routerLink="/login">Log In</button>
+        </ng-template>
+    </header>
+
+    <main>
+        <router-outlet />
+    </main>
+</div>

@@ -1,1 +1,17 @@
-<p>login works!</p>
+<div class="container mt-4">
+  <div class="d-flex  flex-column align-items-center justify-content-center h-[90vh] ">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-50">
+      <div class="mb-3">
+        <label for="username" class="form-label">User Name</label>
+        <input type="text" id="username" formControlName="username" class="form-control" />
+        <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="text-danger">
+          User Name is required.
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Log In</button>
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+</div>

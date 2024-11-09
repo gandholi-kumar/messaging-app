@@ -1,1 +1,41 @@
-<p>post-edit works!</p>
+<div class="container mt-4">
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" id="title" formControlName="title" class="form-control" />
+            <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="text-danger">
+                <div *ngIf="title?.errors?.['required']">Title is required.</div>
+                <div *ngIf="title?.errors?.['maxlength']">Title cannot exceed 200 characters.</div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="body" class="form-label">Message</label>
+            <textarea id="body" formControlName="body" class="form-control" rows="5"></textarea>
+            <div *ngIf="body?.invalid && (body?.dirty || body?.touched)" class="text-danger">
+                <div *ngIf="body?.errors?.['required']">Message is required.</div>
+                <div *ngIf="body?.errors?.['maxlength']">Message cannot exceed 2000 characters.</div>
+            </div>
+        </div>
+
+        <div *ngIf="isEditMode; else saveTemplate">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
+                </div>
+                <ng-template [ngTemplateOutlet]="saveTemplate"></ng-template>
+            </div>
+        </div>
+
+        <ng-template #saveTemplate>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success me-2" [disabled]="postForm.invalid || !postForm.dirty">
+                    Save
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="!postForm.dirty">
+                    Cancel
+                </button>
+            </div>
+        </ng-template>
+    </form>
+</div>

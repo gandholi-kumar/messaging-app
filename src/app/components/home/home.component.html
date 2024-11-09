@@ -1,22 +1,55 @@
-<div class="">
-    <table>
-        <tr>
-            <th>User</th>
-            <th>Post</th>
-        </tr>
-        <tr *ngFor="let post of posts | slice: (currentPage - 1) * pageSize : currentPage * pageSize">
-            <td>
-                <div class="post-container">
-                    Leanne Graham
-                    <a target="_blank" href="hildegard.org"> Romaguera-Crona</a>
-                </div>
-            </td>
-            <td>
-                <div class="post-container">
-                    {{ post.title }}
-                    {{ post.body }}
-                </div>
-            </td>
-        </tr>
-    </table>
+<div class="container mt-4">
+  <ng-container *ngIf="notification$ | async as notification">
+    <ng-container *appHideAfter="3000">
+      <h2 class="text-success">{{notification}}</h2>
+    </ng-container>
+  </ng-container>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="col-2">User</th>
+        <th class="col-10">Post</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let post of displayedPosts">
+        <td>
+          <ng-container [ngTemplateOutlet]="userContext"
+            [ngTemplateOutletContext]="{$implicit: users | user : post.userId }">
+          </ng-container>
+
+          <ng-template let-user #userContext>
+            {{ user | userName }}<br>
+            <a target="_blank" [href]="user | companyWebsite">
+              {{ user | companyName }}
+            </a>
+          </ng-template>
+        </td>
+        <td>
+          <ng-container *ngIf="currentUser$ | async as user; else showTitle">
+            <a routerLink="/post-edit/{{post.id}}" *ngIf="user && post.userId === user.id; else showTitle">
+              <ng-container [ngTemplateOutlet]="showTitle">
+              </ng-container>
+            </a>
+          </ng-container>
+          
+          <ng-template #showTitle>
+            <strong>{{ post.title }}</strong>
+          </ng-template>
+          <p>{{ post.body }}</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-end gap-3 align-items-center">
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="btn btn-outline-primary" (click)="prevPage()" [disabled]="currentPage === 1">
+      &#11207;
+    </button>
+    <button class="btn btn-outline-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      &#11208;
+    </button>
+  </div>
 </div>
