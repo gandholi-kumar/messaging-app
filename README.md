@@ -2,6 +2,10 @@
 
 A messaging application where a user can post messages and update existing messages from a list of posted messages.
 
+# Demo:
+Deployed in Netlify 
+[Messaging application](https://sai-messaging-application.netlify.app/)
+> Note: Few of the Log in usernames [Bret, Antonette, Samantha, Moriah.Stanton]
 
 ## Folder structure
 Folder structure [Mindmap](src/assets/doc/misc/folderStructure.txt).
