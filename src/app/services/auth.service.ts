@@ -10,9 +10,9 @@ export class AuthService {
   private currentUser: User | null = null;
   private currentUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   private notification$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
-  
+
   getCurrentUser$ = this.currentUser$.asObservable();
-  getNotification$ = this.notification$.asObservable();;
+  getNotification$ = this.notification$.asObservable();
 
   constructor() {
     this.loadUserFromLocalStorage();
@@ -40,6 +40,9 @@ export class AuthService {
 
   setNotification(notifyText: string) {
     this.notification$.next(notifyText);
+    setTimeout(() => {
+      this.notification$.next('');
+    }, 1000);
   }
 
   private loadUserFromLocalStorage() {

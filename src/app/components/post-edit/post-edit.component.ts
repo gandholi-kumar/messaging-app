@@ -112,7 +112,6 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
       this.authService.setNotification('A new post was saved successfully');
     }
 
-    this.postForm.reset();
     this.unsavedChanges = false;
     this.router.navigate(['/']);
   }
@@ -138,7 +137,7 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
   }
 
   canDeactivate(): boolean {
-    if (this.postForm.dirty) {
+    if (this.unsavedChanges) {
       return confirm('You have unsaved changes. Do you really want to leave?');
     }
     return true;
@@ -153,8 +152,17 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
   }
 
   trackChanges(): void {
-    this.postForm.valueChanges.pipe(takeUntil(this.isComponentDestroyed$)).subscribe(() => {
-      this.unsavedChanges = true;
-    });
+    this.formSubscription = this.postForm.valueChanges
+      .pipe(takeUntil(this.isComponentDestroyed$))
+      .subscribe((val) => {
+        const { body, title } = this.originalPost ?? { body: '', title: '' };
+        const { body: valBody, title: valTitle } = val;
+
+        if (body === valBody && title === valTitle) {
+          this.unsavedChanges = false;
+          return;
+        }
+        this.unsavedChanges = true;
+      });
   }
 }
