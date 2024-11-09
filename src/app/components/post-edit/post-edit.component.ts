@@ -41,6 +41,13 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     });
   }
 
+  /**
+   * Initializes the component.
+   * If the user is not logged in, navigates to the root page.
+   * If the route parameter 'id' is present, loads the post to be edited.
+   * Subscribes to the route parameter observable and updates the post ID and edit mode flag accordingly.
+   * Starts tracking the dirty state of the form.
+   */
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     if (!this.currentUser) {
@@ -62,6 +69,9 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     this.trackChanges();
   }
 
+  /**
+   * Cleanup just before Angular destroys to avoid memory leaks
+   */
   ngOnDestroy(): void {
     if (this.formSubscription) {
       this.formSubscription.unsubscribe();
@@ -70,6 +80,11 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     this.isComponentDestroyed$.complete();
   }
 
+  /**
+   * Loads the post with the specified ID and populates the form with the post's data.
+   * If the post is not found or the user is not the owner of the post, navigates to the root page.
+   * @param id - The ID of the post to be edited.
+   */
   loadPost(id: number): void {
     this.formSubscription = this.postService.getPosts()
       .pipe(takeUntil(this.isComponentDestroyed$))
@@ -87,6 +102,13 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
       });
   }
 
+  /**
+   * Submits the form, by updating the post if it is in edit mode,
+   * or creating a new post if it is not in edit mode.
+   * If the form is invalid, does nothing.
+   * else navigates to the root page and 
+   * shows a notification about the successful creation or update of a post.
+   */
   onSubmit(): void {
     if (this.postForm.invalid) {
       return;
@@ -116,6 +138,11 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     this.router.navigate(['/']);
   }
 
+  /**
+   * Deletes the post being edited if the user confirms they want to delete the post.
+   * If the user does not confirm, does nothing.
+   * If the post is deleted, navigates to the root page and shows a notification about the successful deletion of a post.
+   */
   onDelete(): void {
     if (confirm('Are you sure you want to delete this post?')) {
       if (this.postId) {
@@ -128,6 +155,11 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     }
   }
 
+  /**
+   * Cancels the editing of a post.
+   * If the post was being edited, reloads the original post from the server.
+   * If the post was being created, resets the form to its original state.
+   */
   onCancel() {
     if (this.postId) {
       this.loadPost(this.postId);
@@ -136,6 +168,13 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     }
   }
 
+  /**
+   * Returns a boolean indicating whether the user can deactivate the current route.
+   * If there are unsaved changes, the user is prompted to confirm whether they want to leave.
+   * If the user confirms, true is returned, otherwise false is returned.
+   * If there are no unsaved changes, true is returned immediately.
+   * @returns boolean
+   */
   canDeactivate(): boolean {
     if (this.unsavedChanges) {
       return confirm('You have unsaved changes. Do you really want to leave?');
@@ -143,14 +182,30 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     return true;
   }
 
+  /**
+   * Gets the form control for the title input field.
+   * @returns The form control for the title input field.
+   */
   get title() {
     return this.postForm.get('title');
   }
 
+  /**
+   * Gets the form control for the body input field.
+   * @returns The form control for the body input field.
+   */
   get body() {
     return this.postForm.get('body');
   }
 
+  /**
+   * Tracks changes to the form and sets the `unsavedChanges` property to true 
+   * if the form values do not match the original post.
+   * If the user has not made any changes, sets `unsavedChanges` to false.
+   * The `unsavedChanges` property is used by the `canDeactivate` guard to determine whether 
+   * the user can leave the page without saving their changes.
+   * @returns void
+   */
   trackChanges(): void {
     this.formSubscription = this.postForm.valueChanges
       .pipe(takeUntil(this.isComponentDestroyed$))

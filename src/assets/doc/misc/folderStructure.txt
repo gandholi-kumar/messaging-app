@@ -1,0 +1,73 @@
+📦src
+ ┣ 📂app
+ ┃ ┣ 📂components
+ ┃ ┃ ┣ 📂home
+ ┃ ┃ ┃ ┣ 📜home.component.html
+ ┃ ┃ ┃ ┣ 📜home.component.scss
+ ┃ ┃ ┃ ┣ 📜home.component.spec.ts
+ ┃ ┃ ┃ ┗ 📜home.component.ts
+ ┃ ┃ ┣ 📂layout
+ ┃ ┃ ┃ ┣ 📜layout.component.html
+ ┃ ┃ ┃ ┣ 📜layout.component.scss
+ ┃ ┃ ┃ ┣ 📜layout.component.spec.ts
+ ┃ ┃ ┃ ┗ 📜layout.component.ts
+ ┃ ┃ ┣ 📂login
+ ┃ ┃ ┃ ┣ 📜login.component.html
+ ┃ ┃ ┃ ┣ 📜login.component.scss
+ ┃ ┃ ┃ ┣ 📜login.component.spec.ts
+ ┃ ┃ ┃ ┗ 📜login.component.ts
+ ┃ ┃ ┣ 📂page-not-found
+ ┃ ┃ ┃ ┣ 📜page-not-found.component.html
+ ┃ ┃ ┃ ┣ 📜page-not-found.component.scss
+ ┃ ┃ ┃ ┣ 📜page-not-found.component.spec.ts
+ ┃ ┃ ┃ ┗ 📜page-not-found.component.ts
+ ┃ ┃ ┗ 📂post-edit
+ ┃ ┃ ┃ ┣ 📜post-edit.component.html
+ ┃ ┃ ┃ ┣ 📜post-edit.component.scss
+ ┃ ┃ ┃ ┣ 📜post-edit.component.spec.ts
+ ┃ ┃ ┃ ┗ 📜post-edit.component.ts
+ ┃ ┣ 📂directives
+ ┃ ┃ ┣ 📜hide-after.directive.spec.ts
+ ┃ ┃ ┗ 📜hide-after.directive.ts
+ ┃ ┣ 📂guards
+ ┃ ┃ ┣ 📜auth.guard.spec.ts
+ ┃ ┃ ┣ 📜auth.guard.ts
+ ┃ ┃ ┣ 📜can-deactivate.guard.spec.ts
+ ┃ ┃ ┗ 📜can-deactivate.guard.ts
+ ┃ ┣ 📂models
+ ┃ ┃ ┣ 📜post.model.ts
+ ┃ ┃ ┗ 📜user.model.ts
+ ┃ ┣ 📂pipes
+ ┃ ┃ ┣ 📜company-name.pipe.spec.ts
+ ┃ ┃ ┣ 📜company-name.pipe.ts
+ ┃ ┃ ┣ 📜company-website.pipe.spec.ts
+ ┃ ┃ ┣ 📜company-website.pipe.ts
+ ┃ ┃ ┣ 📜user-name.pipe.spec.ts
+ ┃ ┃ ┣ 📜user-name.pipe.ts
+ ┃ ┃ ┣ 📜user.pipe.spec.ts
+ ┃ ┃ ┗ 📜user.pipe.ts
+ ┃ ┣ 📂services
+ ┃ ┃ ┣ 📜auth.service.spec.ts
+ ┃ ┃ ┣ 📜auth.service.ts
+ ┃ ┃ ┣ 📜post.service.spec.ts
+ ┃ ┃ ┣ 📜post.service.ts
+ ┃ ┃ ┣ 📜user.service.spec.ts
+ ┃ ┃ ┗ 📜user.service.ts
+ ┃ ┣ 📜app.component.html
+ ┃ ┣ 📜app.component.scss
+ ┃ ┣ 📜app.component.spec.ts
+ ┃ ┣ 📜app.component.ts
+ ┃ ┣ 📜app.config.ts
+ ┃ ┗ 📜app.routes.ts
+ ┣ 📂assets
+ ┃ ┗ 📂doc
+ ┃ ┃ ┣ 📂img
+ ┃ ┃ ┃ ┣ 📜MF-UI-exercise-wireframes-1-of-2.png
+ ┃ ┃ ┃ ┗ 📜MF-UI-exercise-wireframes-2-of-2.png
+ ┃ ┃ ┣ 📂misc
+ ┃ ┃ ┃ ┗ 📜folderStructure.txt
+ ┃ ┃ ┗ 📂pdf
+ ┃ ┃ ┃ ┗ 📜MicroFocus-UI-exercise-specifications.pdf
+ ┣ 📜index.html
+ ┣ 📜main.ts
+ ┗ 📜styles.scss

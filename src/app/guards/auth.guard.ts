@@ -10,6 +10,17 @@ export class AuthGuard implements CanActivate {
 
   constructor(private authService: AuthService, private router: Router) { }
 
+  /**
+   * This guard is used to prevent users from navigating to routes that require authentication,
+   * if the user is not logged in.
+   *
+   * If the user is logged in, true is returned and the navigation is allowed.
+   * If the user is not logged in, the user is redirected to the login page and false is returned.
+   *
+   * @param route The ActivatedRouteSnapshot of the route the user wants to navigate to.
+   * @param state The RouterStateSnapshot of the route the user wants to navigate to.
+   * @returns True if the user is logged in, false if the user is not logged in.
+   */
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

@@ -8,7 +8,7 @@ import { User } from '../../models/user.model';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule],
+  imports: [CommonModule, RouterLink, RouterOutlet],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
@@ -22,11 +22,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private router: Router,
     private authService: AuthService) { }
 
+  /**
+   * Initializes the component.
+   * Sets the currentUser$ observable to the observable of the current user.
+   * Calls getPageTitle to update the pageTitle based on the current route.
+   */
   ngOnInit(): void {
     this.currentUser$ = this.authService.getCurrentUser$;
     this.getPageTitle();
   }
 
+  /**
+   * Cleanup just before Angular destroys to avoid memory leaks
+   */
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -35,11 +43,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isComponentDestroyed$.complete();
   }
 
+  /**
+   * Logs out the user and navigates to the root page.
+   * Clears the user's authentication.
+   * Navigates to the root page.
+   */
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
   }
 
+  /**
+   * Sets the pageTitle to the title of the current route.
+   * The title is retrieved from the route's data property.
+   */
   getPageTitle() {
     this.subscription = this.router.events
       .pipe(takeUntil(this.isComponentDestroyed$))

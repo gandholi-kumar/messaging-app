@@ -32,6 +32,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * If there are no users in local storage, fetches the users from the server.
+   * Sets the users array to the fetched users.
+   */
   ngOnInit(): void {
     if (this.userService.getUsers().length === 0) {
       this.subscription = this.userService.fetchUsers()
@@ -42,14 +46,22 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Cleanup just before Angular destroys to avoid memory leaks
+   */
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
-    }    
+    }
     this.isComponentDestroyed$.next(true);
     this.isComponentDestroyed$.complete();
   }
 
+  /**
+   * Submits the form, by logging in the user if the entered username is valid.
+   * If the username is valid, navigates to the home page.
+   * If the username is invalid, sets an error message.
+   */
   onSubmit(): void {
     const username = this.loginForm.value.username;
     const user = this.userService.getUserByUsername(username);
@@ -61,6 +73,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Gets the form control for the username input field.
+   * @returns The form control for the username input field.
+   */
   get username() {
     return this.loginForm.get('username');
   }
