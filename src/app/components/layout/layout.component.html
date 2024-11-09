@@ -23,8 +23,10 @@
             </ng-container>
         </ng-template>
         <ng-template #loginButton>
-            <span class="ms-auto me-3">You are not logged in</span>
-            <button class="btn btn-primary" routerLink="/login">Log In</button>
+            <ng-container *ngIf="pageTitle !== 'Login'">
+                <span class="ms-auto me-3">You are not logged in</span>
+                <button class="btn btn-primary" routerLink="/login">Log In</button>
+            </ng-container>
         </ng-template>
     </header>
 

@@ -2,7 +2,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { CompanyNamePipe } from '../../pipes/company-name.pipe';
 import { CompanyWebsitePipe } from '../../pipes/company-website.pipe';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, TrackByFunction } from '@angular/core';
 import { HideAfterDirective } from '../../directives/hide-after.directive';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { Post } from '../../models/post.model';
@@ -81,6 +81,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     const end = start + this.postsPerPage;
     this.displayedPosts = this.posts.slice(start, end);
   }
+
+  trackByBookId: TrackByFunction<Post> = (index: number, post: Post): string => {
+    return `${index}-${post.id}`;
+  };
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
