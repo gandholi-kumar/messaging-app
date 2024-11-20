@@ -1,0 +1,9 @@
+<div class="d-flex justify-content-end gap-3 align-items-center">
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <button class="btn btn-outline-primary" (click)="onPreviousPageClick.emit()" [disabled]="currentPage === 1">
+    &#11207;
+  </button>
+  <button class="btn btn-outline-primary" (click)="onNextPageClick.emit()" [disabled]="currentPage === totalPages">
+    &#11208;
+  </button>
+</div>

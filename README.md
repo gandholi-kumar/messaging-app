@@ -30,6 +30,16 @@ Please find the images of the working application as mentioned below.
 - [Editing existing post by logged in user](src\assets\doc\img\edit_post.png)
 - [Deleting existing post by logged in user](src\assets\doc\img\edit_post_on_deletion.png)
 
+## Future Enhancements:
+
+- [ ] Model popup
+- [ ] Include Search box to filter the table
+- [ ] Table body should fit with in view port
+- [ ] On save on modifying the existing post it should redirect to same page where user selected post
+- [ ] Create backend server for Pagination and CRUD operations
+- [ ] Include token based authentication
+- [ ] Enhance the UI
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.

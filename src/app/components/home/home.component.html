@@ -7,13 +7,6 @@
 
   <app-table [posts]="displayedPosts" [currentUser]="currentUser$ | async" [users]="users"></app-table>
 
-  <div class="d-flex justify-content-end gap-3 align-items-center">
-    <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button class="btn btn-outline-primary" (click)="prevPage()" [disabled]="currentPage === 1">
-      &#11207;
-    </button>
-    <button class="btn btn-outline-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">
-      &#11208;
-    </button>
-  </div>
+  <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (onPreviousPageClick)="prevPage()"
+    (onNextPageClick)="nextPage()"></app-pagination>
 </div>

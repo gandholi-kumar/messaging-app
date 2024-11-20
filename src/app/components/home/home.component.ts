@@ -9,11 +9,12 @@ import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { NotifcationService } from '../../services/notification.service';
 import { TableComponent } from '../shared-components/table/table.component';
+import { PaginationComponent } from '../shared-components/pagination/pagination.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HideAfterDirective, TableComponent],
+  imports: [CommonModule, HideAfterDirective, TableComponent, PaginationComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
