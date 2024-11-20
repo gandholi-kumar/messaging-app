@@ -8,6 +8,7 @@ import { Post } from '../../models/post.model';
 import { PostService } from '../../services/post.service';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { User } from '../../models/user.model';
+import { NotifcationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-post-edit',
@@ -32,6 +33,7 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     private fb: FormBuilder,
     private postService: PostService,
     private authService: AuthService,
+    private notificationService: NotifcationService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -122,7 +124,7 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
         body: formValue.body
       };
       this.postService.updatePost(updatedPost);
-      this.authService.setNotification('Post was updated successfully');
+      this.notificationService.setNotification('Post was updated successfully');
     } else {
       const newPost: Post = {
         userId: this.currentUser!.id,
@@ -131,7 +133,7 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
         body: formValue.body
       };
       this.postService.addPost(newPost);
-      this.authService.setNotification('A new post was saved successfully');
+      this.notificationService.setNotification('A new post was saved successfully');
     }
 
     this.unsavedChanges = false;
@@ -147,11 +149,11 @@ export class PostEditComponent implements OnInit, OnDestroy, CanComponentDeactiv
     if (confirm('Are you sure you want to delete this post?')) {
       if (this.postId) {
         this.postService.deletePost(this.postId);
-        this.authService.setNotification('Post was deleted successfully');
+        this.notificationService.setNotification('Post was deleted successfully');
         this.router.navigate(['/']);
       }
     } else {
-      this.authService.setNotification('');
+      this.notificationService.setNotification('');
     }
   }
 

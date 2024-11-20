@@ -7,12 +7,9 @@ import { User } from '../models/user.model';
 })
 export class AuthService {
   private localStorageKey = 'currentUser';
-  private currentUser: User | null = null;
   private currentUser$: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
-  private notification$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
 
   getCurrentUser$ = this.currentUser$.asObservable();
-  getNotification$ = this.notification$.asObservable();
 
   /**
    * Constructor. Loads the user from local storage.
@@ -27,7 +24,6 @@ export class AuthService {
    * @param user The user to log in.
    */
   login(user: User) {
-    this.currentUser = user;
     this.currentUser$.next(user);
     localStorage.setItem(this.localStorageKey, JSON.stringify(user));
   }
@@ -39,7 +35,6 @@ export class AuthService {
    * @returns void
    */
   logout() {
-    this.currentUser = null;
     this.currentUser$.next(null);
     localStorage.removeItem(this.localStorageKey);
   }
@@ -50,7 +45,7 @@ export class AuthService {
    * @returns True if a user is logged in, false otherwise.
    */
   isLoggedIn(): boolean {
-    return this.currentUser !== null;
+    return this.currentUser$.getValue() !== null;
   }
 
   /**
@@ -59,20 +54,7 @@ export class AuthService {
    * @returns The current user, or null
    */
   getCurrentUser(): User | null {
-    return this.currentUser;
-  }
-
-/**
- * Sets a notification message to be displayed.
- * The notification message is cleared after 1 second.
- * 
- * @param notifyText - The notification message to be set.
- */
-  setNotification(notifyText: string) {
-    this.notification$.next(notifyText);
-    setTimeout(() => {
-      this.notification$.next('');
-    }, 3000);
+    return this.currentUser$.getValue();
   }
 
   /**
@@ -83,7 +65,6 @@ export class AuthService {
   private loadUserFromLocalStorage() {
     const storedUser = localStorage.getItem(this.localStorageKey);
     if (storedUser) {
-      this.currentUser = JSON.parse(storedUser);
       this.currentUser$.next(JSON.parse(storedUser));
     }
   }

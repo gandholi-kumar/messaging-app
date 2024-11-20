@@ -5,43 +5,7 @@
     </ng-container>
   </ng-container>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th class="col-2">User</th>
-        <th class="col-10">Post</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let post of displayedPosts; trackBy: trackByBookId">
-        <td>
-          <ng-container [ngTemplateOutlet]="userContext"
-            [ngTemplateOutletContext]="{$implicit: users | user : post.userId }">
-          </ng-container>
-
-          <ng-template let-user #userContext>
-            {{ user | userName }}<br>
-            <a target="_blank" [href]="user | companyWebsite">
-              {{ user | companyName }}
-            </a>
-          </ng-template>
-        </td>
-        <td>
-          <ng-container *ngIf="currentUser$ | async as user; else showTitle">
-            <a routerLink="/post-edit/{{post.id}}" *ngIf="user && post.userId === user.id; else showTitle">
-              <ng-container [ngTemplateOutlet]="showTitle">
-              </ng-container>
-            </a>
-          </ng-container>
-          
-          <ng-template #showTitle>
-            <strong>{{ post.title }}</strong>
-          </ng-template>
-          <p>{{ post.body }}</p>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <app-table [posts]="displayedPosts" [currentUser]="currentUser$ | async" [users]="users"></app-table>
 
   <div class="d-flex justify-content-end gap-3 align-items-center">
     <span>Page {{ currentPage }} of {{ totalPages }}</span>

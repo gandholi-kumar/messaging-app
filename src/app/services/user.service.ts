@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user.model';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { User } from '../models/user.model';
 })
 export class UserService {
   private USERS_URL = 'https://jsonplaceholder.typicode.com/users';
-  private users: User[] = [];
+  private users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
 
   constructor(private http: HttpClient) { }
 
@@ -25,7 +25,7 @@ export class UserService {
    * @param users The array of User objects to set.
    */
   setUsers(users: User[]) {
-    this.users = users;
+    this.users$.next(users);
   }
 
   /**
@@ -33,7 +33,7 @@ export class UserService {
    * @returns An array of User objects.
    */
   getUsers(): User[] {
-    return this.users;
+    return this.users$.getValue();
   }
 
   /**
@@ -42,6 +42,6 @@ export class UserService {
    * @returns The User object found, or undefined if not found.
    */
   getUserByUsername(username: string): User | undefined {
-    return this.users.find(user => user.username.toLowerCase() === username.toLowerCase());
+    return this.getUsers().find(user => user.username.toLowerCase() === username.toLowerCase());
   }
 }

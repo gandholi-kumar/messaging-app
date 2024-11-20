@@ -1,0 +1,49 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th class="col-2">User</th>
+      <th class="col-10">Post</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="posts.length > 0; else noPostsTemplate">
+        <ng-container [ngTemplateOutlet]="postTemplate"
+          [ngTemplateOutletContext]="{$implicit: posts }">
+        </ng-container>
+    </ng-container>
+    
+    <ng-template #noPostsTemplate>
+      <tr>No Posts available...</tr>
+    </ng-template>
+
+    <ng-template posts #postTemplate>
+      <tr *ngFor="let post of posts; trackBy: trackByBookId">
+        <td>
+          <ng-container [ngTemplateOutlet]="userContextTemplate"
+            [ngTemplateOutletContext]="{$implicit: users | user : post.userId }">
+          </ng-container>
+
+          <ng-template let-user #userContextTemplate>
+            {{ user | userName }}<br>
+            <a target="_blank" [href]="user | companyWebsite">
+              {{ user | companyName }}
+            </a>
+          </ng-template>
+        </td>
+        <td>
+          <ng-container *ngIf="currentUser; else showTitleTemplate">
+            <a routerLink="/post-edit/{{post.id}}" *ngIf="currentUser && post.userId === currentUser.id; else showTitleTemplate">
+              <ng-container [ngTemplateOutlet]="showTitleTemplate">
+              </ng-container>
+            </a>
+          </ng-container>
+          
+          <ng-template #showTitleTemplate>
+            <strong>{{ post.title }}</strong>
+          </ng-template>
+          <p>{{ post.body }}</p>
+        </td>
+      </tr>
+    </ng-template>
+  </tbody>
+</table>

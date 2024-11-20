@@ -1,22 +1,19 @@
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { CompanyNamePipe } from '../../pipes/company-name.pipe';
-import { CompanyWebsitePipe } from '../../pipes/company-website.pipe';
-import { Component, OnDestroy, OnInit, TrackByFunction } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HideAfterDirective } from '../../directives/hide-after.directive';
 import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { Post } from '../../models/post.model';
 import { PostService } from '../../services/post.service';
-import { RouterLink } from '@angular/router';
 import { User } from '../../models/user.model';
-import { UserNamePipe } from '../../pipes/user-name.pipe';
-import { UserPipe } from '../../pipes/user.pipe';
 import { UserService } from '../../services/user.service';
+import { NotifcationService } from '../../services/notification.service';
+import { TableComponent } from '../shared-components/table/table.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, CompanyNamePipe, CompanyWebsitePipe, HideAfterDirective, RouterLink, UserNamePipe, UserPipe],
+  imports: [CommonModule, HideAfterDirective, TableComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -36,7 +33,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private postService: PostService,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotifcationService
   ) { }
 
   /**
@@ -61,7 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.loadPosts();
     this.currentUser$ = this.authService.getCurrentUser$;
-    this.notification$ = this.authService.getNotification$;
+    this.notification$ = this.notificationService.getNotification$;
   }
 
   /**
@@ -103,17 +101,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     const end = start + this.postsPerPage;
     this.displayedPosts = this.posts.slice(start, end);
   }
-
-  /**
-   * Tracks the posts by the index and the post ID.
-   * This is used in the *ngFor to keep track of the posts in the array.
-   * @param index - The index of the post in the array.
-   * @param post - The post object.
-   * @returns A string that represents the post that can be used in the *ngFor.
-   */
-  trackByBookId: TrackByFunction<Post> = (index: number, post: Post): string => {
-    return `${index}-${post.id}`;
-  };
 
   /**
    * If the current page is less than the total number of pages, it increments the current page by 1 and

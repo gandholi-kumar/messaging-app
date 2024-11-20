@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Post } from '../models/post.model';
 
 @Injectable({
@@ -9,8 +9,7 @@ import { Post } from '../models/post.model';
 })
 export class PostService {
   private POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
-  private posts: Post[] = [];
-  private postsSubject = new BehaviorSubject<Post[]>([]);
+  private postsSubject$ = new BehaviorSubject<Post[]>([]);
 
   constructor(private http: HttpClient) { }
 
@@ -22,11 +21,9 @@ export class PostService {
    */
   fetchPosts(): Observable<Post[]> {
     return this.http.get<Post[]>(this.POSTS_URL).pipe(
-      map(posts => {
-        this.posts = posts;
-        this.postsSubject.next(this.posts);
+      tap(posts => {
+        this.postsSubject$.next(posts);
         this.savePostsToLocalStorage();
-        return this.posts;
       })
     );
   }
@@ -40,35 +37,37 @@ export class PostService {
    * @returns An observable that emits the posts array.
    */
   getPosts(): Observable<Post[]> {
-    return this.postsSubject.asObservable();
+    return this.postsSubject$.asObservable();
   }
 
   /**
    * Adds a new post to the beginning of the posts array.
    * Assigns a unique ID to the post using generatePostId().
-   * Notifies any subscribers of the postsSubject of the updated posts array.
+   * Notifies any subscribers of the postsSubject$ of the updated posts array.
    * Saves the updated posts array to local storage.
    * @param post - The post to be added.
    */
   addPost(post: Post) {
     post.id = this.generatePostId();
-    this.posts.unshift(post);
-    this.postsSubject.next(this.posts);
+    const currentPosts = this.getCurrentPostsValue();
+    currentPosts.unshift(post);
+    this.postsSubject$.next(currentPosts);
     this.savePostsToLocalStorage();
   }
 
   /**
    * Updates a post in the posts array.
    * If the post is found in the posts array, it is replaced with the updated post.
-   * Notifies any subscribers of the postsSubject of the updated posts array.
+   * Notifies any subscribers of the postsSubject$ of the updated posts array.
    * Saves the updated posts array to local storage.
    * @param updatedPost - The post to be updated.
    */
   updatePost(updatedPost: Post) {
-    const index = this.posts.findIndex(post => post.id === updatedPost.id);
+    const currentPosts = this.getCurrentPostsValue();
+    const index = currentPosts.findIndex(post => post.id === updatedPost.id);
     if (index !== -1) {
-      this.posts[index] = updatedPost;
-      this.postsSubject.next(this.posts);
+      currentPosts[index] = updatedPost;
+      this.postsSubject$.next(currentPosts);
       this.savePostsToLocalStorage();
     }
   }
@@ -76,13 +75,14 @@ export class PostService {
   /**
    * Deletes a post from the posts array.
    * If the post is found in the posts array, it is removed.
-   * Notifies any subscribers of the postsSubject of the updated posts array.
+   * Notifies any subscribers of the postsSubject$ of the updated posts array.
    * Saves the updated posts array to local storage.
    * @param id - The ID of the post to be deleted.
    */
   deletePost(id: number) {
-    this.posts = this.posts.filter(post => post.id !== id);
-    this.postsSubject.next(this.posts);
+    const currentPosts = this.getCurrentPostsValue();
+    const filteredPosts = currentPosts.filter(post => post.id !== id);
+    this.postsSubject$.next(filteredPosts);
     this.savePostsToLocalStorage();
   }
 
@@ -92,8 +92,8 @@ export class PostService {
   loadPostsFromLocalStorage() {
     const storedPosts = localStorage.getItem('posts');
     if (storedPosts) {
-      this.posts = JSON.parse(storedPosts);
-      this.postsSubject.next(this.posts);
+      const posts = JSON.parse(storedPosts);
+      this.postsSubject$.next(posts);
     } else {
       this.fetchPosts().subscribe();
     }
@@ -103,7 +103,8 @@ export class PostService {
    * Save posts to local storage. This is called whenever the posts array changes.
    */
   private savePostsToLocalStorage() {
-    localStorage.setItem('posts', JSON.stringify(this.posts));
+    const currentPosts = this.getCurrentPostsValue();
+    localStorage.setItem('posts', JSON.stringify(currentPosts));
   }
 
   /**
@@ -112,6 +113,15 @@ export class PostService {
    * is set to 1.
    */
   private generatePostId(): number {
-    return this.posts.length > 0 ? Math.max(...this.posts.map(p => p.id)) + 1 : 1;
+    const currentPosts = this.getCurrentPostsValue();   
+    return currentPosts.length > 0 ? Math.max(...currentPosts.map(p => p.id)) + 1 : 1;
+  }
+
+  /**
+   * Returns list of current posts.
+   * @returns list of Post
+   */
+  private getCurrentPostsValue(): Post[] {
+    return this.postsSubject$.getValue(); 
   }
 }
