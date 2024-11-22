@@ -1,7 +1,7 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Post } from '../models/post.model';
 
 @Injectable({
@@ -21,6 +21,10 @@ export class PostService {
    */
   fetchPosts(): Observable<Post[]> {
     return this.http.get<Post[]>(this.POSTS_URL).pipe(
+      catchError((err) => {
+        console.log('Error handled by post service', err);
+        return throwError(() => new Error('Could not fetch post details...'));
+      }),
       tap(posts => {
         this.postsSubject$.next(posts);
         this.savePostsToLocalStorage();

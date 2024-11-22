@@ -1,23 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
 import { User } from '../models/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private USERS_URL = 'https://jsonplaceholder.typicode.com/users';
   private users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Fetches the users from the server.
    * @returns An observable that emits an array of User objects.
    */
   fetchUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.USERS_URL);
+    return this.http.get<User[]>(this.USERS_URL).pipe(
+      catchError((err) => {
+        console.log('Error handled by User service', err);
+        return throwError(() => new Error('Could not fetch user details...'));
+      })
+    );
   }
 
   /**
@@ -42,6 +47,8 @@ export class UserService {
    * @returns The User object found, or undefined if not found.
    */
   getUserByUsername(username: string): User | undefined {
-    return this.getUsers().find(user => user.username.toLowerCase() === username.toLowerCase());
+    return this.getUsers().find(
+      (user) => user.username.toLowerCase() === username.toLowerCase()
+    );
   }
 }

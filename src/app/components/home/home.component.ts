@@ -2,7 +2,15 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HideAfterDirective } from '../../directives/hide-after.directive';
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import {
+  catchError,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { Post } from '../../models/post.model';
 import { PostService } from '../../services/post.service';
 import { User } from '../../models/user.model';
@@ -14,29 +22,34 @@ import { PaginationComponent } from '../shared-components/pagination/pagination.
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HideAfterDirective, TableComponent, PaginationComponent],
+  imports: [
+    CommonModule,
+    HideAfterDirective,
+    TableComponent,
+    PaginationComponent,
+  ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, OnDestroy {
-
   posts: Post[] = [];
   users: User[] = [];
   displayedPosts: Post[] = [];
-  currentPage: number = 1;
-  postsPerPage: number = 10;
-  totalPages: number = 1;
+  currentPage = 1;
+  postsPerPage = 10;
+  totalPages = 1;
   currentUser$!: Observable<User | null>;
   notification$!: Observable<string | null>;
-  private isComponentDestroyed$: Subject<boolean> = new Subject();
+  private isComponentDestroyed$ = new Subject<boolean>();
   private subscription!: Subscription;
+  error: unknown;
 
   constructor(
     private postService: PostService,
     private userService: UserService,
     private authService: AuthService,
     private notificationService: NotifcationService
-  ) { }
+  ) {}
 
   /**
    * Initializes the component.
@@ -48,9 +61,22 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     if (this.userService.getUsers().length === 0) {
-      this.subscription = this.userService.fetchUsers()
-        .pipe(takeUntil(this.isComponentDestroyed$))
-        .subscribe(users => {
+      this.subscription = this.userService
+        .fetchUsers()
+        .pipe(
+          tap({
+            error: (err) => {
+              this.error = err;
+              console.log('Updated the component error property');
+            },
+          }),
+          catchError(() => {
+            console.log('Replacing error with empty array');
+            return of([]);
+          }),
+          takeUntil(this.isComponentDestroyed$)
+        )
+        .subscribe((users) => {
           this.userService.setUsers(users);
           this.users = users;
         });
@@ -76,14 +102,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   /**
    * Loads the posts. If there are posts in local storage, it uses those posts.
-   * If not, it fetches the posts from the server. 
+   * If not, it fetches the posts from the server.
    * Then it displays the first page of posts.
    */
   loadPosts(): void {
     this.postService.loadPostsFromLocalStorage();
-    this.subscription = this.postService.getPosts()
+    this.subscription = this.postService
+      .getPosts()
       .pipe(takeUntil(this.isComponentDestroyed$))
-      .subscribe(posts => {
+      .subscribe((posts) => {
         this.posts = posts;
         this.totalPages = Math.ceil(this.posts.length / this.postsPerPage);
         this.displayPage(this.currentPage);
@@ -93,7 +120,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   /**
    * Displays the posts for the specified page number. Updates the current page and sets
    * the displayedPosts array to contain only the posts for the current page.
-   * 
+   *
    * @param page - The page number to display.
    */
   displayPage(page: number): void {

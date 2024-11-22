@@ -1,12 +1,26 @@
 <div class="container mt-4">
   <ng-container *ngIf="notification$ | async as notification">
     <ng-container *appHideAfter="3000">
-      <h2 class="text-success">{{notification}}</h2>
+      <h2 class="text-success">{{ notification }}</h2>
     </ng-container>
   </ng-container>
 
-  <app-table [posts]="displayedPosts" [currentUser]="currentUser$ | async" [users]="users"></app-table>
+  <ng-container *ngIf="error; else renderTableTemplate">
+    <h2 class="text-danger">Some error occurred ...</h2>
+  </ng-container>
 
-  <app-pagination [currentPage]="currentPage" [totalPages]="totalPages" (onPreviousPageClick)="prevPage()"
-    (onNextPageClick)="nextPage()"></app-pagination>
+  <ng-template #renderTableTemplate>
+    <app-table
+      [posts]="displayedPosts"
+      [currentUser]="currentUser$ | async"
+      [users]="users"
+    ></app-table>
+
+    <app-pagination
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      (onPreviousPageClick)="prevPage()"
+      (onNextPageClick)="nextPage()"
+    ></app-pagination>
+  </ng-template>
 </div>
